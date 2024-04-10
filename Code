@@ -1,0 +1,11 @@
+class Task:
+    def __init__(self,title,asignee,reporter,priority):
+        self.title=title
+        self.asignee=asignee
+        self.reporter=reporter
+        self.priority=priority
+
+class KanbanBoard:
+    def __init__(self,name):
+        self.name=name
+        self.status={"To do":[],"In Progress":[],"Done":[]}
