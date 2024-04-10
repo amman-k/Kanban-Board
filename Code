@@ -21,3 +21,12 @@ class KanbanBoard:
                 print(f"task {name} succesfully removed")
                 return
         print(f"Task {name} not found")
+
+    def move(self,name,src,dest):
+        for id,task in enumerate(self.status[src]):
+            if name==task.title:
+                move=task.status[src].pop(id)
+                self.status[dest].append(move)
+                print(f"Task {name} moved from {src} to {dest}")
+                return
+        print("Task {name} not found")
