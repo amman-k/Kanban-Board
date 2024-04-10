@@ -1,32 +1,115 @@
+import sys
+
 class Task:
-    def __init__(self,title,asignee,reporter,priority):
-        self.title=title
-        self.asignee=asignee
-        self.reporter=reporter
-        self.priority=priority
+    def __init__(self, title, assignee, reporter, priority):
+        self.title = title
+        self.assignee = assignee
+        self.reporter = reporter
+        self.priority = priority
 
 class KanbanBoard:
-    def __init__(self,name):
-        self.name=name
-        self.status={"To do":[],"In Progress":[],"Done":[]}
-
-    def add(self,title,asignee,reporter,priority,stat="To do"):
-        task=Task(title,asignee,reporter,priority)
+    def __init__(self, name):
+        self.name = name
+        self.status = {"To do": [], "In Progress": [], "Done": []}
+    
+    def add(self, title, assignee, reporter, priority, stat="To do"):
+        if priority.lower() not in ['high', 'medium', 'low']:
+            print("Invalid priority. Please enter 'High', 'Medium', or 'Low'.")
+            return
+        task = Task(title, assignee, reporter, priority)
         self.status[stat].append(task)
     
-    def remove(self,name,stat):
-        for id,task in enumerate(self.status[stat]):
-            if name==task.title:
+    def remove(self, name, stat):
+        for id, task in enumerate(self.status[stat]):
+            if name == task.title:
                 del self.status[stat][id]
-                print(f"task {name} succesfully removed")
+                print(f"Task {name} successfully removed")
                 return
         print(f"Task {name} not found")
 
-    def move(self,name,src,dest):
-        for id,task in enumerate(self.status[src]):
-            if name==task.title:
-                move=task.status[src].pop(id)
+    def move(self, name, src, dest):
+        for id, task in enumerate(self.status[src]):
+            if name == task.title:
+                move = self.status[src].pop(id)
                 self.status[dest].append(move)
                 print(f"Task {name} moved from {src} to {dest}")
                 return
-        print("Task {name} not found")
+        print(f"Task {name} not found")
+
+    def view(self, stat=None):
+        if stat:
+            if stat in self.status:
+                print(f"Tasks in {stat}:")
+                for task in self.status[stat]:
+                    print(f"Title: {task.title}, Assignee: {task.assignee}, Reporter: {task.reporter}, Priority: {task.priority}")
+            else:
+                print("Invalid status.")
+        else:
+            for status, tasks in self.status.items():
+                print(f"Tasks in {status}:")
+                for task in tasks:
+                    print(f"Title: {task.title}, Assignee: {task.assignee}, Reporter: {task.reporter}, Priority: {task.priority}")
+ 
+
+def main():
+    board = {}
+
+    while True:
+        print("\tMenu:")
+        print("1. Create a new board")
+        print("2. Select a board")
+        print("3. Add a task")
+        print("4. Remove a task")
+        print("5. Move a task")
+        print("6. List tasks")
+        print("7. Exit")  
+        choice = input("Enter your choice: ")
+
+        if choice == '1':
+            board_name = input("Enter board name: ")
+            board[board_name] = KanbanBoard(board_name)
+            print(f"Board {board_name} created.")
+
+        elif choice == '2':
+            board_name = input("Enter board name: ")
+            if board_name in board:
+                selected_board = board[board_name]
+                print(f"Board {board_name} selected.")
+            else:
+                print(f"Board {board_name} not found.")
+            
+        elif choice == '3':
+            title = input("Enter task title: ")
+            assignee = input("Enter assignee: ")
+            reporter = input("Enter reporter: ")
+            priority = input("Enter priority (High/Medium/Low): ")
+            status = input("Enter status (To do/In Progress/Done): ")
+            selected_board.add(title, assignee, reporter, priority, status)
+        
+        elif choice == '4':
+            status = input("Enter status (To do/In Progress/Done): ")
+            task_name = input("Enter task name to remove: ")
+            selected_board.remove(task_name, status)
+
+        elif choice == '5':
+            src_status = input("Enter source status (To do/In Progress/Done): ")
+            dest_status = input("Enter destination status (To do/In Progress/Done): ")
+            task_name = input("Enter task name to move: ")
+            selected_board.move(task_name, src_status, dest_status)
+
+        elif choice == '6':
+            status = input("Enter status to list tasks (optional, press enter to view all): ")
+            if status and status not in ['To do', 'In Progress', 'Done']:
+                print("Invalid status.")
+            else:
+                selected_board.view(status)
+
+        elif choice == '7':
+            print("Exiting...")
+            sys.exit()
+
+        else:
+            print("Invalid choice. Please enter a number between 1 and 7.")
+
+if __name__ == "__main__":
+    main()
