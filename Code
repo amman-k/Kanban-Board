@@ -9,3 +9,15 @@ class KanbanBoard:
     def __init__(self,name):
         self.name=name
         self.status={"To do":[],"In Progress":[],"Done":[]}
+
+    def add(self,title,asignee,reporter,priority,stat="To do"):
+        task=Task(title,asignee,reporter,priority)
+        self.status[stat].append(task)
+    
+    def remove(self,name,stat):
+        for id,task in enumerate(self.status[stat]):
+            if name==task.title:
+                del self.status[stat][id]
+                print(f"task {name} succesfully removed")
+                return
+        print(f"Task {name} not found")
